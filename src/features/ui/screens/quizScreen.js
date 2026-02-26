@@ -3,7 +3,7 @@ export function renderQuizScreen(root, { question, progressText, feedback, onCho
     <section class="screen">
       <p class="progress">${progressText}</p>
       <div class="problem">${question.prompt}</div>
-      <div class="btn-row" id="choices"></div>
+      <div class="btn-row choices-row" id="choices"></div>
       <p class="feedback ${feedback?.type ?? ""}">${feedback?.text ?? ""}</p>
     </section>
   `;

@@ -6,7 +6,7 @@ export function renderHomeScreen(root, { onStart }) {
       <div class="btn-row">
         <button class="primary-btn" data-focus="0">시작하기</button>
       </div>
-      <p class="subtitle">리모컨 방향키 + 확인(Enter)로 조작해요</p>
+      <p class="subtitle hint-text">리모컨 방향키 + 확인(Enter)로 조작해요</p>
     </section>
   `;
 
