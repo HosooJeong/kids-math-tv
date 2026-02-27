@@ -150,6 +150,10 @@ body.bg-wave {
   background: #ffeaf5;
 }
 
+.choice-btn:active {
+  transform: scale(0.98);
+}
+
 .problem {
   text-align: center;
   font-size: clamp(58px, 8vw, 110px);

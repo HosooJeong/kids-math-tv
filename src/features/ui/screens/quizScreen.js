@@ -9,20 +9,34 @@ export function renderQuizScreen(root, { question, progressText, feedback, onCho
   `;
 
   const choicesEl = root.querySelector("#choices");
+  let isSubmitting = false;
+
+  const buttons = [];
+
+  function setFocus(idx) {
+    buttons.forEach((b, i) => b.classList.toggle("focused", i === idx));
+  }
+
+  function submitChoice(choice, idx) {
+    if (isSubmitting) return;
+    isSubmitting = true;
+    setFocus(idx);
+    setTimeout(() => {
+      onChoice(choice);
+      isSubmitting = false;
+    }, 90);
+  }
+
   question.choices.forEach((choice, idx) => {
     const btn = document.createElement("button");
     btn.className = "choice-btn";
     btn.dataset.focus = String(idx);
     btn.textContent = String(choice);
-    btn.addEventListener("click", () => onChoice(choice));
+    btn.addEventListener("pointerdown", () => setFocus(idx));
+    btn.addEventListener("click", () => submitChoice(choice, idx));
     choicesEl.appendChild(btn);
+    buttons.push(btn);
   });
-
-  const buttons = [...root.querySelectorAll(".choice-btn")];
-
-  function setFocus(idx) {
-    buttons.forEach((b, i) => b.classList.toggle("focused", i === idx));
-  }
 
   setFocus(0);
 
@@ -31,7 +45,7 @@ export function renderQuizScreen(root, { question, progressText, feedback, onCho
     setFocus,
     select: (idx) => {
       const value = Number(buttons[idx]?.textContent);
-      if (!Number.isNaN(value)) onChoice(value);
+      if (!Number.isNaN(value)) submitChoice(value, idx);
     }
   };
 }
