@@ -1,11 +1,17 @@
 import basketEmptyImg from "../../../assets/fruit/basket_empty.jpg";
-import basketJumpSheetImg from "../../../assets/fruit/basket_jump_sheet.jpg";
-import fxSheetImg from "../../../assets/fruit/fx_sheet.jpg";
+import basketFrame1 from "../../../assets/fruit/basket_frame_1.png";
+import basketFrame2 from "../../../assets/fruit/basket_frame_2.png";
+import basketFrame3 from "../../../assets/fruit/basket_frame_3.png";
+import basketFrame4 from "../../../assets/fruit/basket_frame_4.png";
+import basketFrame5 from "../../../assets/fruit/basket_frame_5.png";
+import basketFrame6 from "../../../assets/fruit/basket_frame_6.png";
+import fxSheetImg from "../../../assets/fruit/fx_sheet_cut.png";
 import bananaImg from "../../../assets/fruit/banana.jpg";
 import orangeImg from "../../../assets/fruit/orange.jpg";
 import grapeImg from "../../../assets/fruit/grape.jpg";
 
 const FRUITS = [bananaImg, orangeImg, grapeImg];
+const BASKET_FRAMES = [basketFrame1, basketFrame2, basketFrame3, basketFrame4, basketFrame5, basketFrame6];
 
 export function renderQuizScreen(root, {
   question,
@@ -64,21 +70,36 @@ export function renderQuizScreen(root, {
     }
   }
 
+  let frameTimer = null;
+
   function popBasket() {
     basketShellEl.classList.remove("basket-jump");
     basketSparkleEl.classList.remove("basket-sparkle-on");
 
-    basketImageEl.src = basketJumpSheetImg;
+    if (frameTimer) {
+      clearInterval(frameTimer);
+      frameTimer = null;
+    }
+
+    let idx = 0;
+    basketImageEl.src = BASKET_FRAMES[idx];
 
     requestAnimationFrame(() => {
       basketShellEl.classList.add("basket-jump");
       basketSparkleEl.classList.add("basket-sparkle-on");
     });
 
-    setTimeout(() => {
-      basketImageEl.src = basketEmptyImg;
-      basketSparkleEl.classList.remove("basket-sparkle-on");
-    }, 430);
+    frameTimer = setInterval(() => {
+      idx += 1;
+      if (idx >= BASKET_FRAMES.length) {
+        clearInterval(frameTimer);
+        frameTimer = null;
+        basketImageEl.src = basketEmptyImg;
+        basketSparkleEl.classList.remove("basket-sparkle-on");
+        return;
+      }
+      basketImageEl.src = BASKET_FRAMES[idx];
+    }, 70);
   }
 
   function addFruit() {

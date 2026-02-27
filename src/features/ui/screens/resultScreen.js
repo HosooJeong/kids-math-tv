@@ -1,4 +1,4 @@
-import basketFullImg from "../../../assets/fruit/basket_full_happy.jpg";
+import basketFullImg from "../../../assets/fruit/basket_full_happy_cut.png";
 
 export function renderResultScreen(root, { result, onReplay }) {
   const stars = "⭐".repeat(result.stars);

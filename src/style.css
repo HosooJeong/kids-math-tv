@@ -202,15 +202,15 @@ body.bg-wave {
 .basket-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
 }
 
 .basket-sparkle {
   position: absolute;
-  left: -18px;
-  top: -20px;
-  width: 150px;
+  left: -14px;
+  top: -14px;
+  width: 136px;
   opacity: 0;
   pointer-events: none;
 }
