@@ -110,6 +110,12 @@ body.bg-wave {
   -webkit-tap-highlight-color: transparent;
   background: #edf3ff;
   color: #172554;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    opacity 180ms ease,
+    outline-color 180ms ease;
 }
 
 .primary-btn {
@@ -129,9 +135,19 @@ body.bg-wave {
   max-width: 260px;
 }
 
+.choice-btn:not(.focused) {
+  opacity: 0.9;
+  background: #edf1fb;
+}
+
 .focused {
-  outline: 8px solid var(--focus);
-  transform: translateY(-2px);
+  outline: 6px solid var(--focus);
+  box-shadow: 0 10px 24px rgba(255, 143, 189, 0.24);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.choice-btn.focused {
+  background: #ffeaf5;
 }
 
 .problem {
@@ -145,9 +161,16 @@ body.bg-wave {
 
 .progress {
   text-align: center;
-  font-size: clamp(20px, 2.2vw, 30px);
-  line-height: 1.25;
-  color: #6b7280;
+  font-size: clamp(18px, 1.9vw, 24px);
+  line-height: 1.2;
+  color: #4b5563;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 8px 14px;
+  margin: 0 auto;
+  width: fit-content;
+  font-weight: 700;
 }
 
 .feedback {
@@ -346,5 +369,14 @@ body.bg-wave {
 
   .focused {
     outline-width: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
