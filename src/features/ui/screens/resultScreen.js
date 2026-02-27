@@ -1,13 +1,19 @@
-import basketFullImg from "../../../assets/fruit/basket_full_happy_cut.png";
-
 export function renderResultScreen(root, { result, onReplay }) {
   const stars = "⭐".repeat(result.stars);
+  const fruitRow = "🍎 🍌 🍊 🍇";
+
   root.innerHTML = `
     <section class="screen">
       <h1 class="title">참 잘했어요!</h1>
       <p class="score">${result.correct} / ${result.total}</p>
       <div class="result-basket-wrap">
-        <img class="result-basket" src="${basketFullImg}" alt="가득 찬 바구니" />
+        <div class="basket-character result-basket-character">
+          <div class="basket-handle"></div>
+          <div class="basket-body">
+            <span class="basket-face">🥳</span>
+          </div>
+          <div class="result-fruits">${fruitRow}</div>
+        </div>
       </div>
       <p class="subtitle">평균 ${Math.round(result.avgMs / 1000)}초</p>
       <p class="subtitle">${stars}</p>

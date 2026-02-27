@@ -1,17 +1,4 @@
-import basketEmptyImg from "../../../assets/fruit/basket_empty_new_cut.png";
-import basketFrame1 from "../../../assets/fruit/basket_frame_1.png";
-import basketFrame2 from "../../../assets/fruit/basket_frame_2.png";
-import basketFrame3 from "../../../assets/fruit/basket_frame_3.png";
-import basketFrame4 from "../../../assets/fruit/basket_frame_4.png";
-import basketFrame5 from "../../../assets/fruit/basket_frame_5.png";
-import basketFrame6 from "../../../assets/fruit/basket_frame_6.png";
-import fxSheetImg from "../../../assets/fruit/fx_stars_sheet_cut.png";
-import bananaImg from "../../../assets/fruit/banana.jpg";
-import orangeImg from "../../../assets/fruit/orange.jpg";
-import grapeImg from "../../../assets/fruit/grape.jpg";
-
-const FRUITS = [bananaImg, orangeImg, grapeImg];
-const BASKET_FRAMES = [basketFrame1, basketFrame2, basketFrame3, basketFrame4, basketFrame5, basketFrame6];
+const FRUITS = ["🍌", "🍊", "🍇", "🍎"];
 
 export function renderQuizScreen(root, {
   question,
@@ -27,8 +14,13 @@ export function renderQuizScreen(root, {
 
       <div class="basket-hud">
         <div class="basket-shell" id="basket-shell">
-          <img class="basket-image" id="basket-image" src="${basketEmptyImg}" alt="바구니" />
-          <img class="basket-sparkle" id="basket-sparkle" src="${fxSheetImg}" alt="반짝 효과" />
+          <div class="basket-sparkle" id="basket-sparkle">✨</div>
+          <div class="basket-character" id="basket-character">
+            <div class="basket-handle"></div>
+            <div class="basket-body">
+              <span class="basket-face" id="basket-face">😊</span>
+            </div>
+          </div>
           <span class="basket-counter" id="basket-counter">${collectedCount}/${totalCount}</span>
         </div>
         <div class="basket-fruits" id="basket-fruits"></div>
@@ -42,18 +34,18 @@ export function renderQuizScreen(root, {
 
   const choicesEl = root.querySelector("#choices");
   const basketShellEl = root.querySelector("#basket-shell");
-  const basketImageEl = root.querySelector("#basket-image");
+  const basketFaceEl = root.querySelector("#basket-face");
   const basketSparkleEl = root.querySelector("#basket-sparkle");
   const basketCounterEl = root.querySelector("#basket-counter");
   const basketFruitsEl = root.querySelector("#basket-fruits");
-  let isSubmitting = false;
-
   const quizScreenEl = root.querySelector("#quiz-screen");
+
+  let isSubmitting = false;
   const buttons = [];
   let currentFocusIdx = 0;
   let collected = collectedCount;
 
-  function fruitSrcFor(index) {
+  function fruitFor(index) {
     return FRUITS[index % FRUITS.length];
   }
 
@@ -62,44 +54,27 @@ export function renderQuizScreen(root, {
     basketFruitsEl.innerHTML = "";
 
     for (let i = 0; i < collected; i += 1) {
-      const fruit = document.createElement("img");
+      const fruit = document.createElement("span");
       fruit.className = "basket-fruit-mini";
-      fruit.src = fruitSrcFor(i);
-      fruit.alt = "과일";
+      fruit.textContent = fruitFor(i);
       basketFruitsEl.appendChild(fruit);
     }
   }
 
-  let frameTimer = null;
-
   function popBasket() {
     basketShellEl.classList.remove("basket-jump");
     basketSparkleEl.classList.remove("basket-sparkle-on");
-
-    if (frameTimer) {
-      clearInterval(frameTimer);
-      frameTimer = null;
-    }
-
-    let idx = 0;
-    basketImageEl.src = BASKET_FRAMES[idx];
+    basketFaceEl.textContent = "😆";
 
     requestAnimationFrame(() => {
       basketShellEl.classList.add("basket-jump");
       basketSparkleEl.classList.add("basket-sparkle-on");
     });
 
-    frameTimer = setInterval(() => {
-      idx += 1;
-      if (idx >= BASKET_FRAMES.length) {
-        clearInterval(frameTimer);
-        frameTimer = null;
-        basketImageEl.src = basketEmptyImg;
-        basketSparkleEl.classList.remove("basket-sparkle-on");
-        return;
-      }
-      basketImageEl.src = BASKET_FRAMES[idx];
-    }, 70);
+    setTimeout(() => {
+      basketFaceEl.textContent = "😊";
+      basketSparkleEl.classList.remove("basket-sparkle-on");
+    }, 420);
   }
 
   function addFruit() {
@@ -107,12 +82,11 @@ export function renderQuizScreen(root, {
     const from = fromEl.getBoundingClientRect();
     const to = basketShellEl.getBoundingClientRect();
 
-    const fly = document.createElement("img");
-    fly.src = fruitSrcFor(collected);
-    fly.alt = "날아가는 과일";
+    const fly = document.createElement("span");
     fly.className = "flying-fruit";
-    fly.style.left = `${from.left + from.width / 2 - 22}px`;
-    fly.style.top = `${from.top + from.height / 2 - 22}px`;
+    fly.textContent = fruitFor(collected);
+    fly.style.left = `${from.left + from.width / 2 - 20}px`;
+    fly.style.top = `${from.top + from.height / 2 - 20}px`;
     fly.style.setProperty("--dx", `${to.left + to.width / 2 - (from.left + from.width / 2)}px`);
     fly.style.setProperty("--dy", `${to.top + to.height / 2 - (from.top + from.height / 2)}px`);
     document.body.appendChild(fly);
