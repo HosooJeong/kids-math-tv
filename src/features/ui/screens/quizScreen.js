@@ -1,4 +1,4 @@
-import basketEmptyImg from "../../../assets/fruit/basket_empty.jpg";
+import basketEmptyImg from "../../../assets/fruit/basket_empty_new_cut.png";
 import basketFrame1 from "../../../assets/fruit/basket_frame_1.png";
 import basketFrame2 from "../../../assets/fruit/basket_frame_2.png";
 import basketFrame3 from "../../../assets/fruit/basket_frame_3.png";
