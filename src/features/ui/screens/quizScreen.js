@@ -1,4 +1,6 @@
 import basketEmptyImg from "../../../assets/fruit/basket_empty.jpg";
+import basketJumpSheetImg from "../../../assets/fruit/basket_jump_sheet.jpg";
+import fxSheetImg from "../../../assets/fruit/fx_sheet.jpg";
 import bananaImg from "../../../assets/fruit/banana.jpg";
 import orangeImg from "../../../assets/fruit/orange.jpg";
 import grapeImg from "../../../assets/fruit/grape.jpg";
@@ -19,7 +21,8 @@ export function renderQuizScreen(root, {
 
       <div class="basket-hud">
         <div class="basket-shell" id="basket-shell">
-          <img class="basket-image" src="${basketEmptyImg}" alt="바구니" />
+          <img class="basket-image" id="basket-image" src="${basketEmptyImg}" alt="바구니" />
+          <img class="basket-sparkle" id="basket-sparkle" src="${fxSheetImg}" alt="반짝 효과" />
           <span class="basket-counter" id="basket-counter">${collectedCount}/${totalCount}</span>
         </div>
         <div class="basket-fruits" id="basket-fruits"></div>
@@ -33,6 +36,8 @@ export function renderQuizScreen(root, {
 
   const choicesEl = root.querySelector("#choices");
   const basketShellEl = root.querySelector("#basket-shell");
+  const basketImageEl = root.querySelector("#basket-image");
+  const basketSparkleEl = root.querySelector("#basket-sparkle");
   const basketCounterEl = root.querySelector("#basket-counter");
   const basketFruitsEl = root.querySelector("#basket-fruits");
   let isSubmitting = false;
@@ -61,7 +66,19 @@ export function renderQuizScreen(root, {
 
   function popBasket() {
     basketShellEl.classList.remove("basket-jump");
-    requestAnimationFrame(() => basketShellEl.classList.add("basket-jump"));
+    basketSparkleEl.classList.remove("basket-sparkle-on");
+
+    basketImageEl.src = basketJumpSheetImg;
+
+    requestAnimationFrame(() => {
+      basketShellEl.classList.add("basket-jump");
+      basketSparkleEl.classList.add("basket-sparkle-on");
+    });
+
+    setTimeout(() => {
+      basketImageEl.src = basketEmptyImg;
+      basketSparkleEl.classList.remove("basket-sparkle-on");
+    }, 430);
   }
 
   function addFruit() {
