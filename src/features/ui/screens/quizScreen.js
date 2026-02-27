@@ -5,7 +5,7 @@ import basketFrame3 from "../../../assets/fruit/basket_frame_3.png";
 import basketFrame4 from "../../../assets/fruit/basket_frame_4.png";
 import basketFrame5 from "../../../assets/fruit/basket_frame_5.png";
 import basketFrame6 from "../../../assets/fruit/basket_frame_6.png";
-import fxSheetImg from "../../../assets/fruit/fx_sheet_cut.png";
+import fxSheetImg from "../../../assets/fruit/fx_stars_sheet_cut.png";
 import bananaImg from "../../../assets/fruit/banana.jpg";
 import orangeImg from "../../../assets/fruit/orange.jpg";
 import grapeImg from "../../../assets/fruit/grape.jpg";
