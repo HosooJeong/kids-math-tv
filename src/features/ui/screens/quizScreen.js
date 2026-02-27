@@ -1,7 +1,30 @@
-export function renderQuizScreen(root, { question, progressText, feedback, onChoice }) {
+import basketEmptyImg from "../../../assets/fruit/basket_empty.jpg";
+import bananaImg from "../../../assets/fruit/banana.jpg";
+import orangeImg from "../../../assets/fruit/orange.jpg";
+import grapeImg from "../../../assets/fruit/grape.jpg";
+
+const FRUITS = [bananaImg, orangeImg, grapeImg];
+
+export function renderQuizScreen(root, {
+  question,
+  progressText,
+  feedback,
+  onChoice,
+  collectedCount = 0,
+  totalCount = 5
+}) {
   root.innerHTML = `
     <section class="screen quiz-screen" id="quiz-screen">
       <p class="progress">${progressText}</p>
+
+      <div class="basket-hud">
+        <div class="basket-shell" id="basket-shell">
+          <img class="basket-image" src="${basketEmptyImg}" alt="바구니" />
+          <span class="basket-counter" id="basket-counter">${collectedCount}/${totalCount}</span>
+        </div>
+        <div class="basket-fruits" id="basket-fruits"></div>
+      </div>
+
       <div class="problem">${question.prompt}</div>
       <div class="btn-row choices-row" id="choices"></div>
       <p class="feedback ${feedback?.type ?? ""}">${feedback?.text ?? ""}</p>
@@ -9,16 +32,67 @@ export function renderQuizScreen(root, { question, progressText, feedback, onCho
   `;
 
   const choicesEl = root.querySelector("#choices");
+  const basketShellEl = root.querySelector("#basket-shell");
+  const basketCounterEl = root.querySelector("#basket-counter");
+  const basketFruitsEl = root.querySelector("#basket-fruits");
   let isSubmitting = false;
 
   const quizScreenEl = root.querySelector("#quiz-screen");
   const buttons = [];
+  let currentFocusIdx = 0;
+  let collected = collectedCount;
+
+  function fruitSrcFor(index) {
+    return FRUITS[index % FRUITS.length];
+  }
+
+  function renderCollectedFruits() {
+    basketCounterEl.textContent = `${collected}/${totalCount}`;
+    basketFruitsEl.innerHTML = "";
+
+    for (let i = 0; i < collected; i += 1) {
+      const fruit = document.createElement("img");
+      fruit.className = "basket-fruit-mini";
+      fruit.src = fruitSrcFor(i);
+      fruit.alt = "과일";
+      basketFruitsEl.appendChild(fruit);
+    }
+  }
+
+  function popBasket() {
+    basketShellEl.classList.remove("basket-jump");
+    requestAnimationFrame(() => basketShellEl.classList.add("basket-jump"));
+  }
+
+  function addFruit() {
+    const fromEl = buttons[currentFocusIdx] ?? choicesEl;
+    const from = fromEl.getBoundingClientRect();
+    const to = basketShellEl.getBoundingClientRect();
+
+    const fly = document.createElement("img");
+    fly.src = fruitSrcFor(collected);
+    fly.alt = "날아가는 과일";
+    fly.className = "flying-fruit";
+    fly.style.left = `${from.left + from.width / 2 - 22}px`;
+    fly.style.top = `${from.top + from.height / 2 - 22}px`;
+    fly.style.setProperty("--dx", `${to.left + to.width / 2 - (from.left + from.width / 2)}px`);
+    fly.style.setProperty("--dy", `${to.top + to.height / 2 - (from.top + from.height / 2)}px`);
+    document.body.appendChild(fly);
+
+    fly.addEventListener("animationend", () => {
+      fly.remove();
+      collected += 1;
+      renderCollectedFruits();
+      popBasket();
+    }, { once: true });
+  }
 
   function revealFocus() {
     quizScreenEl.classList.add("show-focus");
   }
 
   function setFocus(idx) {
+    currentFocusIdx = idx;
     buttons.forEach((b, i) => b.classList.toggle("focused", i === idx));
   }
 
@@ -47,12 +121,14 @@ export function renderQuizScreen(root, { question, progressText, feedback, onCho
     buttons.push(btn);
   });
 
+  renderCollectedFruits();
   setFocus(0);
 
   return {
     focusCount: buttons.length,
     setFocus,
     onNavigate: revealFocus,
+    addFruit,
     select: (idx) => {
       const value = Number(buttons[idx]?.textContent);
       if (!Number.isNaN(value)) submitChoice(value, idx);

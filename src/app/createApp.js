@@ -40,6 +40,8 @@ export function createApp(root) {
       question,
       progressText: `${session.state.index + 1} / ${session.state.total}`,
       feedback,
+      collectedCount: session.state.correct,
+      totalCount: session.state.total,
       onChoice: handleAnswer
     });
   }
@@ -50,6 +52,7 @@ export function createApp(root) {
 
     if (result.isCorrect) {
       combo += 1;
+      screenApi?.addFruit?.();
       playCorrectEffects(root, combo);
       const comboText = combo >= 2 ? ` (${combo}콤보!)` : "";
       feedback = { type: "ok", text: `정답! 잘했어! 🎉${comboText}` };
