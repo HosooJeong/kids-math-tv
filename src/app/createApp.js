@@ -75,10 +75,12 @@ export function createApp(root) {
 
   bindRemote({
     onLeft: () => {
+      screenApi?.onNavigate?.();
       focusIndex -= 1;
       clampFocus();
     },
     onRight: () => {
+      screenApi?.onNavigate?.();
       focusIndex += 1;
       clampFocus();
     },

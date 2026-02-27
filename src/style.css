@@ -150,6 +150,14 @@ body.bg-wave {
   background: #ffeaf5;
 }
 
+.quiz-screen:not(.show-focus) .choice-btn.focused {
+  outline: none;
+  box-shadow: none;
+  transform: none;
+  background: #edf1fb;
+  opacity: 0.9;
+}
+
 .choice-btn:active {
   transform: scale(0.98);
 }
