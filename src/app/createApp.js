@@ -25,7 +25,7 @@ export function createApp(root) {
   }
 
   function startGame() {
-    session = createSession({ total: 5, level: 2 });
+    session = createSession({ total: 10, level: 2 });
     feedback = null;
     combo = 0;
     showQuestion();

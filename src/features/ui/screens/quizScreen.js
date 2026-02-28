@@ -6,7 +6,7 @@ export function renderQuizScreen(root, {
   feedback,
   onChoice,
   collectedCount = 0,
-  totalCount = 5
+  totalCount = 10
 }) {
   root.innerHTML = `
     <section class="screen quiz-screen" id="quiz-screen">

@@ -1,6 +1,6 @@
 import { generateAddSingleDigitQuestion } from "../modes/add-single-digit/generator.js";
 
-export function createSession({ total = 5, level = 1 } = {}) {
+export function createSession({ total = 10, level = 1 } = {}) {
   const state = {
     total,
     level,

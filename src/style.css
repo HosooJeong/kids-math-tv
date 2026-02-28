@@ -31,6 +31,10 @@ body.bg-wave {
   animation: bg-wave 700ms ease-out;
 }
 
+body.fx-boom {
+  animation: screen-boom 360ms cubic-bezier(0.2, 0.75, 0.35, 1);
+}
+
 #app {
   width: 100%;
   min-height: 100vh;
@@ -388,7 +392,9 @@ body.bg-wave {
   left: 0;
   top: 0;
   transform: translate(var(--x), var(--y));
-  animation: particle-burst var(--dur) ease-out forwards;
+  animation: particle-burst var(--dur) cubic-bezier(0.2, 0.82, 0.3, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+  will-change: transform, opacity;
 }
 
 .fx-particle.confetti {
@@ -425,6 +431,14 @@ body.bg-wave {
   100% {
     filter: saturate(1) brightness(1);
   }
+}
+
+@keyframes screen-boom {
+  0% { transform: translate(0, 0) scale(1); }
+  18% { transform: translate(-3px, 2px) scale(1.008); }
+  42% { transform: translate(3px, -2px) scale(1.012); }
+  65% { transform: translate(-2px, 1px) scale(1.006); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 @media (max-width: 768px) {
