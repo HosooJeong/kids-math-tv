@@ -4,6 +4,8 @@ import { renderHomeScreen } from "../features/ui/screens/homeScreen.js";
 import { renderQuizScreen } from "../features/ui/screens/quizScreen.js";
 import { renderResultScreen } from "../features/ui/screens/resultScreen.js";
 import { playCorrectEffects } from "../features/ui/components/celebrationEffects.js";
+import { createAudioManager } from "../features/audio/createAudioManager.js";
+import { mountMuteToggle } from "../features/ui/components/muteToggle.js";
 
 export function createApp(root) {
   let session = null;
@@ -11,6 +13,14 @@ export function createApp(root) {
   let screenApi = null;
   let feedback = null;
   let combo = 0;
+  const audio = createAudioManager();
+  const muteToggle = mountMuteToggle({
+    isMuted: () => audio.isMuted(),
+    onToggle: () => audio.toggleMute(),
+    onInteract: () => audio.registerInteraction()
+  });
+
+  audio.onMuteChange(() => muteToggle.render());
 
   function clampFocus() {
     if (!screenApi) return;
@@ -21,7 +31,12 @@ export function createApp(root) {
 
   function showHome() {
     focusIndex = 0;
-    screenApi = renderHomeScreen(root, { onStart: startGame });
+    audio.setBgmScene("home");
+    screenApi = renderHomeScreen(root, {
+      onStart: startGame,
+      onUiSelect: () => audio.playUiSelect(),
+      onInteract: () => audio.registerInteraction()
+    });
   }
 
   function startGame() {
@@ -36,13 +51,17 @@ export function createApp(root) {
     if (!question) return showResult();
 
     focusIndex = 0;
+    audio.setBgmScene("quiz");
     screenApi = renderQuizScreen(root, {
       question,
       progressText: `${session.state.index + 1} / ${session.state.total}`,
       feedback,
       collectedCount: session.state.correct,
       totalCount: session.state.total,
-      onChoice: handleAnswer
+      onChoice: handleAnswer,
+      onUiNavigate: () => audio.playUiNavigate(),
+      onUiSelect: () => audio.playUiSelect(),
+      onInteract: () => audio.registerInteraction()
     });
   }
 
@@ -53,11 +72,13 @@ export function createApp(root) {
     if (result.isCorrect) {
       combo += 1;
       screenApi?.addFruit?.();
+      audio.playCorrectSfx(combo);
       playCorrectEffects(root, combo);
       const comboText = combo >= 2 ? ` (${combo}콤보!)` : "";
       feedback = { type: "ok", text: `정답! 잘했어! 🎉${comboText}` };
     } else {
       combo = 0;
+      audio.playWrongSfx();
       feedback = { type: "no", text: `아쉬워! 정답은 ${result.correctAnswer}야 🙂` };
     }
 
@@ -73,21 +94,37 @@ export function createApp(root) {
   function showResult() {
     const result = session.result();
     focusIndex = 0;
-    screenApi = renderResultScreen(root, { result, onReplay: startGame });
+    audio.setBgmScene("result");
+    screenApi = renderResultScreen(root, {
+      result,
+      onReplay: startGame,
+      onUiSelect: () => audio.playUiSelect(),
+      onInteract: () => audio.registerInteraction()
+    });
   }
 
   bindRemote({
     onLeft: () => {
+      audio.registerInteraction();
+      if ((screenApi?.focusCount ?? 0) > 1) {
+        audio.playUiNavigate();
+      }
       screenApi?.onNavigate?.();
       focusIndex -= 1;
       clampFocus();
     },
     onRight: () => {
+      audio.registerInteraction();
+      if ((screenApi?.focusCount ?? 0) > 1) {
+        audio.playUiNavigate();
+      }
       screenApi?.onNavigate?.();
       focusIndex += 1;
       clampFocus();
     },
     onSelect: () => {
+      audio.registerInteraction();
+      audio.playUiSelect();
       screenApi?.select?.(focusIndex);
     }
   });

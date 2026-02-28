@@ -5,6 +5,9 @@ export function renderQuizScreen(root, {
   progressText,
   feedback,
   onChoice,
+  onUiNavigate,
+  onUiSelect,
+  onInteract,
   collectedCount = 0,
   totalCount = 10
 }) {
@@ -125,10 +128,16 @@ export function renderQuizScreen(root, {
     btn.dataset.focus = String(idx);
     btn.textContent = String(choice);
     btn.addEventListener("pointerdown", () => {
+      onInteract?.();
+      onUiNavigate?.();
       revealFocus();
       setFocus(idx);
     });
-    btn.addEventListener("click", () => submitChoice(choice, idx));
+    btn.addEventListener("click", () => {
+      onInteract?.();
+      onUiSelect?.();
+      submitChoice(choice, idx);
+    });
     choicesEl.appendChild(btn);
     buttons.push(btn);
   });

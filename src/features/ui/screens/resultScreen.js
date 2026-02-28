@@ -1,4 +1,4 @@
-export function renderResultScreen(root, { result, onReplay }) {
+export function renderResultScreen(root, { result, onReplay, onUiSelect, onInteract }) {
   const stars = "⭐".repeat(result.stars);
   const fruitRow = "🍎 🍌 🍊 🍇";
 
@@ -25,7 +25,14 @@ export function renderResultScreen(root, { result, onReplay }) {
 
   const btn = root.querySelector("button");
   btn.classList.add("focused");
-  btn.addEventListener("click", onReplay);
+  btn.addEventListener("pointerdown", () => {
+    onInteract?.();
+  });
+  btn.addEventListener("click", () => {
+    onInteract?.();
+    onUiSelect?.();
+    onReplay();
+  });
 
   return {
     focusCount: 1,

@@ -45,6 +45,45 @@ body.fx-boom {
   padding: clamp(12px, 2vw, 28px);
 }
 
+.mute-toggle-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 2px solid #ffd2e7;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 12001;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.mute-toggle-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+}
+
+.mute-toggle-btn:active {
+  transform: scale(0.97);
+}
+
+.mute-toggle-btn:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.mute-toggle-btn.muted {
+  background: #fff2f2;
+  border-color: #ffc5c5;
+}
+
 .screen {
   width: min(100%, 1200px);
   min-height: min(88vh, 760px);
@@ -614,6 +653,14 @@ body.fx-boom {
 
   .focused {
     outline-width: 5px;
+  }
+
+  .mute-toggle-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 25px;
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    right: calc(env(safe-area-inset-right, 0px) + 8px);
   }
 }
 

@@ -8,6 +8,8 @@ TV/리모컨 입력을 고려한 유아용 숫자 게임 MVP.
 - 10문제 라운드
 - 결과 화면(점수/별)
 - 키보드/리모컨 방향키 + Enter 입력
+- 홈/퀴즈 BGM + 결과 화면 BGM 변주
+- 정답/오답/UI 클릭 효과음 + 전역 음소거 토글
 
 ## 실행
 ```bash
@@ -18,6 +20,16 @@ npm run dev
 ## 조작
 - `←` `→`: 선택지 이동
 - `Enter`: 선택
+- 화면 우측 상단 `🔊/🔇`: 전체 소리 켜기/끄기
+
+## 오디오
+- 모바일 자동재생 제한 대응: 첫 상호작용(터치/클릭/키 입력) 이후에만 오디오 시작
+- 홈/퀴즈 화면은 잔잔한 루프 BGM, 결과 화면은 더 밝은 루프 BGM 재생
+- 정답 시 기존 효과음을 유지하고 가벼운 반짝임 레이어를 추가
+- 오답 시 부드러운 다운톤 효과음, 버튼 상호작용 시 짧은 클릭/선택 효과음 재생
+- 음량은 유아용 기준으로 보수적으로 설정
+- 음소거 상태는 `localStorage`에 저장되어 다음 방문에도 유지
+- `AudioContext`를 사용할 수 없는 환경에서는 무음으로 동작하며 게임 플레이는 그대로 가능
 
 ## 모바일 지원
 - 반응형 브레이크포인트: `<=768px`, `<=480px`
@@ -34,6 +46,8 @@ src/
       createSession.js
     input/
       remote.js
+    audio/
+      createAudioManager.js
     modes/
       add-single-digit/
         generator.js
@@ -41,6 +55,9 @@ src/
       homeScreen.js
       quizScreen.js
       resultScreen.js
+    ui/components/
+      celebrationEffects.js
+      muteToggle.js
 ```
 
 ## 다음 확장

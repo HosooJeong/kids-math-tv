@@ -1,4 +1,4 @@
-export function renderHomeScreen(root, { onStart }) {
+export function renderHomeScreen(root, { onStart, onUiSelect, onInteract }) {
   root.innerHTML = `
     <section class="screen">
       <h1 class="title">숫자 친구 게임</h1>
@@ -12,7 +12,14 @@ export function renderHomeScreen(root, { onStart }) {
 
   const btn = root.querySelector("button");
   btn.classList.add("focused");
-  btn.addEventListener("click", onStart);
+  btn.addEventListener("pointerdown", () => {
+    onInteract?.();
+  });
+  btn.addEventListener("click", () => {
+    onInteract?.();
+    onUiSelect?.();
+    onStart();
+  });
 
   return {
     focusCount: 1,
