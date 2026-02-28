@@ -56,7 +56,8 @@ export function createApp(root) {
       question,
       progressText: `${session.state.index + 1} / ${session.state.total}`,
       feedback,
-      collectedCount: session.state.correct,
+      stageRecords: session.state.records,
+      currentStageIndex: session.state.index,
       totalCount: session.state.total,
       onChoice: handleAnswer,
       onUiNavigate: () => audio.playUiNavigate(),
@@ -71,13 +72,14 @@ export function createApp(root) {
 
     if (result.isCorrect) {
       combo += 1;
-      screenApi?.addFruit?.();
+      screenApi?.markCurrentStage?.(true);
       audio.playCorrectSfx(combo);
       playCorrectEffects(root, combo);
       const comboText = combo >= 2 ? ` (${combo}콤보!)` : "";
       feedback = { type: "ok", text: `정답! 잘했어! 🎉${comboText}` };
     } else {
       combo = 0;
+      screenApi?.markCurrentStage?.(false);
       audio.playWrongSfx();
       feedback = { type: "no", text: `아쉬워! 정답은 ${result.correctAnswer}야 🙂` };
     }

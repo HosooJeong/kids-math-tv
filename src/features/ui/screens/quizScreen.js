@@ -1,4 +1,26 @@
-const FRUITS = ["🍌", "🍊", "🍇", "🍎"];
+function stageStateFromRecord(record) {
+  return record?.isCorrect ? "correct" : "wrong";
+}
+
+function buildStageSlots(totalCount) {
+  return Array.from({ length: totalCount }, (_, idx) => (
+    `<span class="stage-slot state-pending" data-stage-idx="${idx}" role="listitem">☆</span>`
+  )).join("");
+}
+
+function applyStageState(slot, state) {
+  slot.classList.remove("state-pending", "state-correct", "state-wrong");
+  slot.classList.add(`state-${state}`);
+  slot.textContent = state === "pending" ? "☆" : "★";
+
+  const index = Number(slot.dataset.stageIdx) + 1;
+  const labelByState = {
+    pending: "대기",
+    correct: "정답",
+    wrong: "오답"
+  };
+  slot.setAttribute("aria-label", `${index}번 단계 ${labelByState[state]}`);
+}
 
 export function renderQuizScreen(root, {
   question,
@@ -8,25 +30,15 @@ export function renderQuizScreen(root, {
   onUiNavigate,
   onUiSelect,
   onInteract,
-  collectedCount = 0,
+  stageRecords = [],
+  currentStageIndex = 0,
   totalCount = 10
 }) {
   root.innerHTML = `
     <section class="screen quiz-screen" id="quiz-screen">
       <p class="progress">${progressText}</p>
-
-      <div class="basket-hud">
-        <div class="basket-shell" id="basket-shell">
-          <div class="basket-sparkle" id="basket-sparkle">✨</div>
-          <div class="basket-character" id="basket-character">
-            <div class="basket-handle"></div>
-            <div class="basket-body">
-              <span class="basket-face" id="basket-face">😊</span>
-            </div>
-          </div>
-          <span class="basket-counter" id="basket-counter">${collectedCount}/${totalCount}</span>
-        </div>
-        <div class="basket-fruits" id="basket-fruits"></div>
+      <div class="stage-map" id="stage-map" role="list" aria-label="라운드 진행 상태">
+        ${buildStageSlots(totalCount)}
       </div>
 
       <div class="problem">${question.prompt}</div>
@@ -36,70 +48,27 @@ export function renderQuizScreen(root, {
   `;
 
   const choicesEl = root.querySelector("#choices");
-  const basketShellEl = root.querySelector("#basket-shell");
-  const basketFaceEl = root.querySelector("#basket-face");
-  const basketSparkleEl = root.querySelector("#basket-sparkle");
-  const basketCounterEl = root.querySelector("#basket-counter");
-  const basketFruitsEl = root.querySelector("#basket-fruits");
   const quizScreenEl = root.querySelector("#quiz-screen");
+  const stageSlots = Array.from(root.querySelectorAll("[data-stage-idx]"));
 
   let isSubmitting = false;
   const buttons = [];
   let currentFocusIdx = 0;
-  let collected = collectedCount;
 
-  function fruitFor(index) {
-    return FRUITS[index % FRUITS.length];
-  }
-
-  function renderCollectedFruits() {
-    basketCounterEl.textContent = `${collected}/${totalCount}`;
-    basketFruitsEl.innerHTML = "";
-
-    for (let i = 0; i < collected; i += 1) {
-      const fruit = document.createElement("span");
-      fruit.className = "basket-fruit-mini";
-      fruit.textContent = fruitFor(i);
-      basketFruitsEl.appendChild(fruit);
-    }
-  }
-
-  function popBasket() {
-    basketShellEl.classList.remove("basket-jump");
-    basketSparkleEl.classList.remove("basket-sparkle-on");
-    basketFaceEl.textContent = "😆";
-
-    requestAnimationFrame(() => {
-      basketShellEl.classList.add("basket-jump");
-      basketSparkleEl.classList.add("basket-sparkle-on");
+  function renderStageMap() {
+    stageSlots.forEach((slot, idx) => {
+      const record = stageRecords[idx];
+      const state = record ? stageStateFromRecord(record) : "pending";
+      applyStageState(slot, state);
+      slot.classList.toggle("is-current", idx === currentStageIndex);
     });
-
-    setTimeout(() => {
-      basketFaceEl.textContent = "😊";
-      basketSparkleEl.classList.remove("basket-sparkle-on");
-    }, 420);
   }
 
-  function addFruit() {
-    const fromEl = buttons[currentFocusIdx] ?? choicesEl;
-    const from = fromEl.getBoundingClientRect();
-    const to = basketShellEl.getBoundingClientRect();
-
-    const fly = document.createElement("span");
-    fly.className = "flying-fruit";
-    fly.textContent = fruitFor(collected);
-    fly.style.left = `${from.left + from.width / 2 - 20}px`;
-    fly.style.top = `${from.top + from.height / 2 - 20}px`;
-    fly.style.setProperty("--dx", `${to.left + to.width / 2 - (from.left + from.width / 2)}px`);
-    fly.style.setProperty("--dy", `${to.top + to.height / 2 - (from.top + from.height / 2)}px`);
-    document.body.appendChild(fly);
-
-    fly.addEventListener("animationend", () => {
-      fly.remove();
-      collected += 1;
-      renderCollectedFruits();
-      popBasket();
-    }, { once: true });
+  function markCurrentStage(isCorrect) {
+    const slot = stageSlots[currentStageIndex];
+    if (!slot) return;
+    applyStageState(slot, isCorrect ? "correct" : "wrong");
+    slot.classList.add("is-current");
   }
 
   function revealFocus() {
@@ -142,14 +111,14 @@ export function renderQuizScreen(root, {
     buttons.push(btn);
   });
 
-  renderCollectedFruits();
+  renderStageMap();
   setFocus(0);
 
   return {
     focusCount: buttons.length,
     setFocus,
     onNavigate: revealFocus,
-    addFruit,
+    markCurrentStage,
     select: (idx) => {
       const value = Number(buttons[idx]?.textContent);
       if (!Number.isNaN(value)) submitChoice(value, idx);
