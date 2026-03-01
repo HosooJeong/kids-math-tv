@@ -6,7 +6,7 @@ function shuffle(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-function makeChoices(answer, { min = 0, max = 20 } = {}) {
+function makeChoices(answer, { min = 1, max = 20 } = {}) {
   const pool = new Set([answer]);
   while (pool.size < 3) {
     const offset = randomInt(-3, 3) || 1;
@@ -41,36 +41,36 @@ function generateCountMatch() {
 }
 
 function generateMake5() {
-  const a = randomInt(0, 5);
+  const a = randomInt(1, 4);
   const answer = 5 - a;
-  return createQuestion(`${a} + □ = 5`, answer, { type: "make-5", a }, { min: 0, max: 5 });
+  return createQuestion(`${a} + □ = 5`, answer, { type: "make-5", a }, { min: 1, max: 5 });
 }
 
 function generateAddMax(maxSum) {
   const a = randomInt(1, Math.min(9, maxSum - 1));
   const b = randomInt(1, Math.min(9, maxSum - a));
   const answer = a + b;
-  return createQuestion(`${a} + ${b} = ?`, answer, { type: "add", a, b }, { min: 0, max: 18 });
+  return createQuestion(`${a} + ${b} = ?`, answer, { type: "add", a, b }, { min: 1, max: 18 });
 }
 
 function generateMake10() {
   const a = randomInt(1, 9);
   const answer = 10 - a;
-  return createQuestion(`${a} + □ = 10`, answer, { type: "make-10", a }, { min: 0, max: 10 });
+  return createQuestion(`${a} + □ = 10`, answer, { type: "make-10", a }, { min: 1, max: 10 });
 }
 
 function generateMissingAddend() {
   const total = randomInt(4, 10);
   const add = randomInt(1, total - 1);
   const answer = total - add;
-  return createQuestion(`□ + ${add} = ${total}`, answer, { type: "missing-addend", total, add }, { min: 0, max: 10 });
+  return createQuestion(`□ + ${add} = ${total}`, answer, { type: "missing-addend", total, add }, { min: 1, max: 10 });
 }
 
 function generateSubtract10() {
   const a = randomInt(2, 10);
   const b = randomInt(1, a - 1);
   const answer = a - b;
-  return createQuestion(`${a} - ${b} = ?`, answer, { type: "subtract", a, b }, { min: 0, max: 10 });
+  return createQuestion(`${a} - ${b} = ?`, answer, { type: "subtract", a, b }, { min: 1, max: 10 });
 }
 
 function generateStory() {
@@ -105,7 +105,7 @@ function generateStory() {
   ];
 
   const scenario = scenarios[randomInt(0, scenarios.length - 1)]();
-  return createQuestion(scenario.prompt, scenario.answer, { type: "story", ...scenario.meta }, { min: 0, max: 12 });
+  return createQuestion(scenario.prompt, scenario.answer, { type: "story", ...scenario.meta }, { min: 1, max: 12 });
 }
 
 export function generateChapterQuestion(chapterType) {
