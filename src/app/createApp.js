@@ -7,6 +7,7 @@ import { renderProgressScreen } from "../features/ui/screens/progressScreen.js";
 import { playCorrectEffects } from "../features/ui/components/celebrationEffects.js";
 import { createAudioManager } from "../features/audio/createAudioManager.js";
 import { mountMuteToggle } from "../features/ui/components/muteToggle.js";
+import { getChapterById } from "../features/chapters/curriculum.js";
 import {
   applySessionResult,
   loadProgress,
@@ -59,6 +60,7 @@ export function createApp(root) {
     screenApi = renderProgressScreen(root, {
       progress,
       onBack: showHome,
+      onStartChapter: startChapterById,
       onUiSelect: () => audio.playUiSelect(),
       onInteract: () => audio.registerInteraction()
     });
@@ -69,9 +71,9 @@ export function createApp(root) {
     return pickSequentialChapter(progress);
   }
 
-  function startGame(mode = activeMode) {
+  function startWithChapter(chapter, mode = activeMode) {
     activeMode = mode;
-    activeChapter = pickChapter(mode);
+    activeChapter = chapter;
 
     session = createSession({
       total: activeChapter.total,
@@ -82,6 +84,18 @@ export function createApp(root) {
     feedback = null;
     combo = 0;
     showQuestion();
+  }
+
+  function startGame(mode = activeMode) {
+    const chapter = pickChapter(mode);
+    startWithChapter(chapter, mode);
+  }
+
+  function startChapterById(chapterId) {
+    const chapter = getChapterById(chapterId);
+    if (!chapter) return;
+    if (!progress.chapters[chapterId]?.unlocked) return;
+    startWithChapter(chapter, "sequential");
   }
 
   function showQuestion() {

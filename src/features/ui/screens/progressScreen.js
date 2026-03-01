@@ -13,7 +13,7 @@ function chapterNodeIcon(cp) {
   return "🔒";
 }
 
-export function renderProgressScreen(root, { progress, onBack, onUiSelect, onInteract }) {
+export function renderProgressScreen(root, { progress, onBack, onStartChapter, onUiSelect, onInteract }) {
   const worlds = [1, 2].map((worldNo) => {
     const chapters = CHAPTERS.filter((chapter) => chapter.world === worldNo);
     const nodes = chapters.map((chapter, idx) => {
@@ -24,14 +24,19 @@ export function renderProgressScreen(root, { progress, onBack, onUiSelect, onInt
 
       return `
         <li class="chapter-node-wrap ${withConnector ? "has-connector" : ""}">
-          <div class="chapter-node ${chapterNodeClass(cp)}">
+          <button
+            class="chapter-node chapter-node-btn ${chapterNodeClass(cp)}"
+            data-chapter-id="${chapter.id}"
+            ${cp.unlocked ? "" : "disabled"}
+            aria-label="${chapter.id} ${chapter.title} ${status}"
+          >
             <div class="chapter-node-icon">${chapterNodeIcon(cp)}</div>
             <div class="chapter-node-title">${chapter.id}</div>
             <div class="chapter-node-name">${chapter.title}</div>
             <div class="chapter-node-status">${status}</div>
             <div class="chapter-node-meter" aria-hidden="true"><span style="width:${mastery}%"></span></div>
             <div class="chapter-node-meta">숙련도 ${mastery}%</div>
-          </div>
+          </button>
         </li>
       `;
     }).join("");
@@ -55,18 +60,47 @@ export function renderProgressScreen(root, { progress, onBack, onUiSelect, onInt
     </section>
   `;
 
-  const btn = root.querySelector("button");
-  btn.classList.add("focused");
-  btn.addEventListener("pointerdown", () => onInteract?.());
-  btn.addEventListener("click", () => {
+  const chapterButtons = Array.from(root.querySelectorAll(".chapter-node-btn"));
+  const backBtn = root.querySelector(".btn-row button");
+  const buttons = [...chapterButtons, backBtn];
+
+  function setFocus(idx) {
+    buttons.forEach((button, i) => button.classList.toggle("focused", i === idx));
+  }
+
+  chapterButtons.forEach((button, idx) => {
+    button.dataset.focus = String(idx);
+    button.addEventListener("pointerdown", () => {
+      onInteract?.();
+      setFocus(idx);
+    });
+    button.addEventListener("click", () => {
+      onInteract?.();
+      onUiSelect?.();
+      if (button.disabled) return;
+      onStartChapter?.(button.dataset.chapterId);
+    });
+  });
+
+  const backIdx = buttons.length - 1;
+  backBtn.dataset.focus = String(backIdx);
+  backBtn.addEventListener("pointerdown", () => {
+    onInteract?.();
+    setFocus(backIdx);
+  });
+  backBtn.addEventListener("click", () => {
     onInteract?.();
     onUiSelect?.();
     onBack();
   });
 
+  setFocus(0);
+
   return {
-    focusCount: 1,
-    setFocus() {},
-    select() { onBack(); }
+    focusCount: buttons.length,
+    setFocus,
+    select(idx) {
+      buttons[idx]?.click();
+    }
   };
 }

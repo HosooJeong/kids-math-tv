@@ -200,6 +200,17 @@ body.fx-boom {
   text-align: center;
 }
 
+.chapter-node-btn {
+  width: 100%;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.chapter-node-btn:disabled {
+  cursor: not-allowed;
+}
+
 .chapter-node-icon { font-size: 24px; }
 .chapter-node-title { font-weight: 800; }
 .chapter-node-name { font-size: 14px; line-height: 1.25; }
