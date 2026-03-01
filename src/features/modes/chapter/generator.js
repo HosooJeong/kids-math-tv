@@ -74,10 +74,38 @@ function generateSubtract10() {
 }
 
 function generateStory() {
-  const a = randomInt(1, 6);
-  const b = randomInt(1, 4);
-  const answer = a + b;
-  return createQuestion(`사과가 ${a}개 있어.\n${b}개 더 받았어.\n모두 몇 개일까?`, answer, { type: "story", a, b }, { min: 0, max: 12 });
+  const scenarios = [
+    () => {
+      const a = randomInt(1, 6);
+      const b = randomInt(1, 4);
+      return {
+        prompt: `사과가 ${a}개 있어.\n${b}개 더 받았어.\n모두 몇 개일까?`,
+        answer: a + b,
+        meta: { kind: "add", a, b }
+      };
+    },
+    () => {
+      const a = randomInt(4, 10);
+      const b = randomInt(1, Math.min(4, a - 1));
+      return {
+        prompt: `바구니에 귤이 ${a}개 있어.\n${b}개를 먹었어.\n남은 건 몇 개일까?`,
+        answer: a - b,
+        meta: { kind: "subtract", a, b }
+      };
+    },
+    () => {
+      const total = randomInt(5, 10);
+      const a = randomInt(1, total - 1);
+      return {
+        prompt: `포도 ${a}송이가 있어.\n모두 ${total}송이가 되려면\n몇 송이가 더 필요할까?`,
+        answer: total - a,
+        meta: { kind: "missing", total, a }
+      };
+    }
+  ];
+
+  const scenario = scenarios[randomInt(0, scenarios.length - 1)]();
+  return createQuestion(scenario.prompt, scenario.answer, { type: "story", ...scenario.meta }, { min: 0, max: 12 });
 }
 
 export function generateChapterQuestion(chapterType) {

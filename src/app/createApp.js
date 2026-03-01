@@ -7,7 +7,6 @@ import { renderProgressScreen } from "../features/ui/screens/progressScreen.js";
 import { playCorrectEffects } from "../features/ui/components/celebrationEffects.js";
 import { createAudioManager } from "../features/audio/createAudioManager.js";
 import { mountMuteToggle } from "../features/ui/components/muteToggle.js";
-// removed unused import
 import {
   applySessionResult,
   loadProgress,
@@ -99,10 +98,18 @@ export function createApp(root) {
       currentStageIndex: session.state.index,
       totalCount: session.state.total,
       onChoice: handleAnswer,
+      onHint: handleHint,
       onUiNavigate: () => audio.playUiNavigate(),
       onUiSelect: () => audio.playUiSelect(),
       onInteract: () => audio.registerInteraction()
     });
+  }
+
+  function handleHint() {
+    const hint = session.useHint();
+    if (!hint) return null;
+    feedback = { type: "ok", text: "힌트: 틀린 답 하나를 지웠어!" };
+    return hint;
   }
 
   function handleAnswer(answer) {

@@ -6,7 +6,20 @@ export function renderProgressScreen(root, { progress, onBack, onUiSelect, onInt
     const cp = progress.chapters[chapter.id];
     const mastery = Math.round(calcMastery(cp) * 100);
     const status = cp.completed ? "완료" : cp.unlocked ? "학습중" : "잠김";
-    return `<li class="progress-item">${chapter.id} ${chapter.title} · ${status} · 숙련도 ${mastery}%</li>`;
+    const icon = cp.completed ? "🏅" : cp.unlocked ? "📘" : "🔒";
+    return `
+      <li class="progress-item ${cp.completed ? "is-done" : cp.unlocked ? "is-open" : "is-locked"}">
+        <div class="progress-item-top">
+          <span class="progress-icon">${icon}</span>
+          <strong>${chapter.id} ${chapter.title}</strong>
+          <span class="progress-badge">${status}</span>
+        </div>
+        <div class="progress-meter" aria-hidden="true">
+          <span style="width:${mastery}%"></span>
+        </div>
+        <div class="progress-meta">숙련도 ${mastery}%</div>
+      </li>
+    `;
   }).join("");
 
   root.innerHTML = `
