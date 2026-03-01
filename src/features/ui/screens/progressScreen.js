@@ -33,6 +33,7 @@ export function renderProgressScreen(root, { progress, onBack, onStartChapter, o
             <div class="chapter-node-icon">${chapterNodeIcon(cp)}</div>
             <div class="chapter-node-title">${chapter.id}</div>
             <div class="chapter-node-name">${chapter.title}</div>
+            <div class="chapter-node-objective">${chapter.objective}</div>
             <div class="chapter-node-status">${status}</div>
             <div class="chapter-node-meter" aria-hidden="true"><span style="width:${mastery}%"></span></div>
             <div class="chapter-node-meta">숙련도 ${mastery}%</div>

@@ -155,13 +155,27 @@ export function createApp(root) {
 
   function showResult() {
     const result = session.result();
+
+    const beforeUnlocked = Object.entries(progress.chapters)
+      .filter(([, cp]) => cp.unlocked)
+      .map(([id]) => id);
+
     progress = applySessionResult(progress, activeChapter.id, result);
+
+    const afterUnlocked = Object.entries(progress.chapters)
+      .filter(([, cp]) => cp.unlocked)
+      .map(([id]) => id);
+
+    const newlyUnlockedId = afterUnlocked.find((id) => !beforeUnlocked.includes(id));
+    const newlyUnlocked = newlyUnlockedId ? getChapterById(newlyUnlockedId) : null;
 
     const recommendation = nextRecommendedChapter(progress, activeChapter.id);
     focusIndex = 0;
     audio.setBgmScene("result");
     screenApi = renderResultScreen(root, {
       chapterTitle: `${activeChapter.id} ${activeChapter.title}`,
+      chapterObjective: activeChapter.objective,
+      unlockMessage: newlyUnlocked ? `${newlyUnlocked.id} ${newlyUnlocked.title} 챕터가 열렸어!` : null,
       result,
       recommendation: recommendation ? `${recommendation.id} ${recommendation.title}` : null,
       onReplay: () => startGame(activeMode),

@@ -1,4 +1,4 @@
-export function renderResultScreen(root, { chapterTitle, result, recommendation, onReplay, onGoHome, onUiSelect, onInteract }) {
+export function renderResultScreen(root, { chapterTitle, chapterObjective, unlockMessage, result, recommendation, onReplay, onGoHome, onUiSelect, onInteract }) {
   const stars = "⭐".repeat(result.stars);
   const fruitRow = "🍎 🍌 🍊 🍇";
 
@@ -6,6 +6,7 @@ export function renderResultScreen(root, { chapterTitle, result, recommendation,
     <section class="screen">
       <h1 class="title">참 잘했어요!</h1>
       <p class="subtitle">${chapterTitle}</p>
+      <p class="subtitle hint-text">학습 목표: ${chapterObjective}</p>
       <p class="score">${result.correct} / ${result.total}</p>
       <div class="result-basket-wrap">
         <div class="basket-character result-basket-character">
@@ -17,6 +18,7 @@ export function renderResultScreen(root, { chapterTitle, result, recommendation,
         </div>
       </div>
       <p class="subtitle">${stars}</p>
+      ${unlockMessage ? `<p class="unlock-toast">✨ ${unlockMessage}</p>` : ""}
       <p class="subtitle hint-text">다음 추천: ${recommendation ?? "현재 챕터 복습"}</p>
       <div class="btn-row">
         <button class="secondary-btn" data-focus="0">같은 모드 계속</button>
