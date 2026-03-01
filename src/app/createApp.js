@@ -3,9 +3,18 @@ import { bindRemote } from "../features/input/remote.js";
 import { renderHomeScreen } from "../features/ui/screens/homeScreen.js";
 import { renderQuizScreen } from "../features/ui/screens/quizScreen.js";
 import { renderResultScreen } from "../features/ui/screens/resultScreen.js";
+import { renderProgressScreen } from "../features/ui/screens/progressScreen.js";
 import { playCorrectEffects } from "../features/ui/components/celebrationEffects.js";
 import { createAudioManager } from "../features/audio/createAudioManager.js";
 import { mountMuteToggle } from "../features/ui/components/muteToggle.js";
+// removed unused import
+import {
+  applySessionResult,
+  loadProgress,
+  nextRecommendedChapter,
+  pickAdaptiveChapter,
+  pickSequentialChapter
+} from "../features/chapters/progressStore.js";
 
 export function createApp(root) {
   let session = null;
@@ -13,6 +22,10 @@ export function createApp(root) {
   let screenApi = null;
   let feedback = null;
   let combo = 0;
+  let progress = loadProgress();
+  let activeMode = "sequential";
+  let activeChapter = null;
+
   const audio = createAudioManager();
   const muteToggle = mountMuteToggle({
     isMuted: () => audio.isMuted(),
@@ -33,14 +46,40 @@ export function createApp(root) {
     focusIndex = 0;
     audio.setBgmScene("home");
     screenApi = renderHomeScreen(root, {
-      onStart: startGame,
+      onStartSequential: () => startGame("sequential"),
+      onStartAdaptive: () => startGame("adaptive"),
+      onShowProgress: showProgress,
       onUiSelect: () => audio.playUiSelect(),
       onInteract: () => audio.registerInteraction()
     });
   }
 
-  function startGame() {
-    session = createSession({ total: 10, level: 2 });
+  function showProgress() {
+    focusIndex = 0;
+    audio.setBgmScene("home");
+    screenApi = renderProgressScreen(root, {
+      progress,
+      onBack: showHome,
+      onUiSelect: () => audio.playUiSelect(),
+      onInteract: () => audio.registerInteraction()
+    });
+  }
+
+  function pickChapter(mode) {
+    if (mode === "adaptive") return pickAdaptiveChapter(progress);
+    return pickSequentialChapter(progress);
+  }
+
+  function startGame(mode = activeMode) {
+    activeMode = mode;
+    activeChapter = pickChapter(mode);
+
+    session = createSession({
+      total: activeChapter.total,
+      chapterId: activeChapter.id,
+      chapterType: activeChapter.type
+    });
+
     feedback = null;
     combo = 0;
     showQuestion();
@@ -54,7 +93,7 @@ export function createApp(root) {
     audio.setBgmScene("quiz");
     screenApi = renderQuizScreen(root, {
       question,
-      progressText: `${session.state.index + 1} / ${session.state.total}`,
+      progressText: `${activeChapter.id} · ${activeChapter.title} · ${session.state.index + 1} / ${session.state.total}`,
       feedback,
       stageRecords: session.state.records,
       currentStageIndex: session.state.index,
@@ -95,11 +134,17 @@ export function createApp(root) {
 
   function showResult() {
     const result = session.result();
+    progress = applySessionResult(progress, activeChapter.id, result);
+
+    const recommendation = nextRecommendedChapter(progress, activeChapter.id);
     focusIndex = 0;
     audio.setBgmScene("result");
     screenApi = renderResultScreen(root, {
+      chapterTitle: `${activeChapter.id} ${activeChapter.title}`,
       result,
-      onReplay: startGame,
+      recommendation: recommendation ? `${recommendation.id} ${recommendation.title}` : null,
+      onReplay: () => startGame(activeMode),
+      onGoHome: showHome,
       onUiSelect: () => audio.playUiSelect(),
       onInteract: () => audio.registerInteraction()
     });

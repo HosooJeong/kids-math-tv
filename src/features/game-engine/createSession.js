@@ -1,19 +1,21 @@
-import { generateAddSingleDigitQuestion } from "../modes/add-single-digit/generator.js";
+import { generateChapterQuestion } from "../modes/chapter/generator.js";
 
-export function createSession({ total = 10, level = 1 } = {}) {
+export function createSession({ total = 10, chapterId = "1-1", chapterType = "add-max-10" } = {}) {
   const state = {
     total,
-    level,
+    chapterId,
+    chapterType,
     index: 0,
     correct: 0,
-    startedAt: performance.now(),
     records: [],
-    currentQuestion: null
+    currentQuestion: null,
+    hintUsed: 0,
+    retries: 0
   };
 
   function nextQuestion() {
     if (state.index >= state.total) return null;
-    state.currentQuestion = generateAddSingleDigitQuestion(state.level);
+    state.currentQuestion = generateChapterQuestion(state.chapterType);
     return state.currentQuestion;
   }
 
@@ -23,11 +25,11 @@ export function createSession({ total = 10, level = 1 } = {}) {
     if (isCorrect) state.correct += 1;
 
     state.records.push({
+      chapterId: state.chapterId,
       questionId: state.currentQuestion.id,
       answer: Number(answer),
       correctAnswer: state.currentQuestion.answer,
-      isCorrect,
-      atMs: performance.now() - state.startedAt
+      isCorrect
     });
 
     state.index += 1;
@@ -39,15 +41,15 @@ export function createSession({ total = 10, level = 1 } = {}) {
   }
 
   function result() {
-    const elapsedMs = performance.now() - state.startedAt;
-    const avgMs = state.records.length ? elapsedMs / state.records.length : 0;
     const ratio = state.total ? state.correct / state.total : 0;
     const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : 1;
     return {
+      chapterId: state.chapterId,
       total: state.total,
       correct: state.correct,
-      avgMs: Math.round(avgMs),
-      stars
+      stars,
+      hintUsed: state.hintUsed,
+      retries: state.retries
     };
   }
 

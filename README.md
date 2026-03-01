@@ -2,15 +2,18 @@
 
 TV/리모컨 입력을 고려한 유아용 숫자 게임 MVP.
 
-## MVP 범위
-- 한 자리 수 + 한 자리 수
+## 현재 범위
+- 챕터 기반 수학 학습(1-1 ~ 2-5)
+- 순차 학습 모드(잠금 해제 진행)
+- 맞춤 랜덤 모드(학습 상태 기반 출제)
 - 3지선다
-- 10문제 라운드
-- 퀴즈 진행 stage-map 시각화(10칸, 현재/정답/오답 별 표시)
-- 결과 화면(점수/별)
+- 챕터별 라운드 진행 stage-map 시각화
+- 결과 화면(점수/별 + 다음 추천 챕터)
+- 진도 보기 화면(챕터별 숙련도/상태)
 - 키보드/리모컨 방향키 + Enter 입력
 - 홈/퀴즈 BGM + 결과 화면 BGM 변주
 - 정답/오답/UI 클릭 효과음 + 전역 음소거 토글
+- 반응속도/제한시간 요소 없음
 
 ## 실행
 ```bash
@@ -45,17 +48,21 @@ src/
   features/
     game-engine/
       createSession.js
+    chapters/
+      curriculum.js
+      progressStore.js
     input/
       remote.js
     audio/
       createAudioManager.js
     modes/
-      add-single-digit/
+      chapter/
         generator.js
     ui/screens/
       homeScreen.js
       quizScreen.js
       resultScreen.js
+      progressScreen.js
     ui/components/
       celebrationEffects.js
       muteToggle.js
