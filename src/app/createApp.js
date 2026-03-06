@@ -113,18 +113,10 @@ export function createApp(root) {
       currentStageIndex: session.state.index,
       totalCount: session.state.total,
       onChoice: handleAnswer,
-      onHint: handleHint,
       onUiNavigate: () => audio.playUiNavigate(),
       onUiSelect: () => audio.playUiSelect(),
       onInteract: () => audio.registerInteraction()
     });
-  }
-
-  function handleHint() {
-    const hint = session.useHint();
-    if (!hint) return null;
-    feedback = { type: "ok", text: "힌트: 틀린 답 하나를 지웠어!" };
-    return hint;
   }
 
   function handleAnswer(answer) {

@@ -9,7 +9,6 @@ export function createSession({ total = 10, chapterId = "1-1", chapterType = "ad
     correct: 0,
     records: [],
     currentQuestion: null,
-    hintUsed: 0,
     retries: 0
   };
 
@@ -30,8 +29,7 @@ export function createSession({ total = 10, chapterId = "1-1", chapterType = "ad
       questionId: state.currentQuestion.id,
       answer: Number(answer),
       correctAnswer: state.currentQuestion.answer,
-      isCorrect,
-      hintUsed: Boolean(state.currentQuestion.hintUsed)
+      isCorrect
     });
 
     state.index += 1;
@@ -42,16 +40,6 @@ export function createSession({ total = 10, chapterId = "1-1", chapterType = "ad
     };
   }
 
-  function useHint() {
-    if (!state.currentQuestion || state.currentQuestion.hintUsed) return null;
-    const wrongChoices = state.currentQuestion.choices.filter((n) => n !== state.currentQuestion.answer);
-    if (!wrongChoices.length) return null;
-    const removeChoice = wrongChoices[Math.floor(Math.random() * wrongChoices.length)];
-    state.currentQuestion.hintUsed = true;
-    state.hintUsed += 1;
-    return { removeChoice };
-  }
-
   function result() {
     const ratio = state.total ? state.correct / state.total : 0;
     const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : 1;
@@ -60,10 +48,9 @@ export function createSession({ total = 10, chapterId = "1-1", chapterType = "ad
       total: state.total,
       correct: state.correct,
       stars,
-      hintUsed: state.hintUsed,
       retries: state.retries
     };
   }
 
-  return { state, nextQuestion, submit, useHint, result };
+  return { state, nextQuestion, submit, result };
 }

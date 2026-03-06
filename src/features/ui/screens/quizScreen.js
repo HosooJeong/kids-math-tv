@@ -27,7 +27,6 @@ export function renderQuizScreen(root, {
   progressText,
   feedback,
   onChoice,
-  onHint,
   onUiNavigate,
   onUiSelect,
   onInteract,
@@ -50,9 +49,6 @@ export function renderQuizScreen(root, {
 
       <section class="choices-card">
         <div class="btn-row choices-row" id="choices"></div>
-        <div class="btn-row hint-row">
-          <button class="hint-btn" id="hint-btn" data-focus="${question.choices.length}">힌트 보기</button>
-        </div>
       </section>
 
       <p class="feedback ${feedback?.type ?? ""}">${feedback?.text ?? ""}</p>
@@ -61,13 +57,10 @@ export function renderQuizScreen(root, {
 
   const choicesEl = root.querySelector("#choices");
   const quizScreenEl = root.querySelector("#quiz-screen");
-  const hintBtn = root.querySelector("#hint-btn");
   const stageSlots = Array.from(root.querySelectorAll("[data-stage-idx]"));
 
   let isSubmitting = false;
-  const choiceButtons = [];
   const buttons = [];
-  let currentFocusIdx = 0;
 
   function renderStageMap() {
     stageSlots.forEach((slot, idx) => {
@@ -90,21 +83,7 @@ export function renderQuizScreen(root, {
   }
 
   function setFocus(idx) {
-    currentFocusIdx = idx;
     buttons.forEach((b, i) => b.classList.toggle("focused", i === idx));
-  }
-
-  function applyHint(removeChoice) {
-    const target = choiceButtons.find((button) => Number(button.textContent) === Number(removeChoice));
-    if (!target || target.disabled) return;
-    target.disabled = true;
-    target.classList.add("disabled-choice");
-    target.setAttribute("aria-disabled", "true");
-
-    if (currentFocusIdx < choiceButtons.length && buttons[currentFocusIdx]?.disabled) {
-      const nextEnabled = buttons.findIndex((b, i) => i < choiceButtons.length && !b.disabled);
-      if (nextEnabled >= 0) setFocus(nextEnabled);
-    }
   }
 
   function submitChoice(choice, idx) {
@@ -135,31 +114,8 @@ export function renderQuizScreen(root, {
       submitChoice(choice, idx);
     });
     choicesEl.appendChild(btn);
-    choiceButtons.push(btn);
     buttons.push(btn);
   });
-
-  hintBtn.addEventListener("pointerdown", () => {
-    onInteract?.();
-    onUiNavigate?.();
-    revealFocus();
-    setFocus(buttons.length - 1);
-  });
-
-  hintBtn.addEventListener("click", () => {
-    onInteract?.();
-    onUiSelect?.();
-    if (hintBtn.disabled) return;
-    const hint = onHint?.();
-    if (hint?.removeChoice !== undefined) {
-      applyHint(hint.removeChoice);
-      hintBtn.disabled = true;
-      hintBtn.classList.add("used");
-      hintBtn.textContent = "힌트 사용 완료";
-    }
-  });
-
-  buttons.push(hintBtn);
 
   renderStageMap();
   setFocus(0);
@@ -170,10 +126,6 @@ export function renderQuizScreen(root, {
     onNavigate: revealFocus,
     markCurrentStage,
     select: (idx) => {
-      if (idx === buttons.length - 1) {
-        hintBtn.click();
-        return;
-      }
       const value = Number(buttons[idx]?.textContent);
       if (!Number.isNaN(value)) submitChoice(value, idx);
     }

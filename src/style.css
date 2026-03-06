@@ -339,35 +339,12 @@ body.fx-boom {
 
 .choice-btn:hover,
 .primary-btn:hover,
-.secondary-btn:hover,
-.hint-btn:hover {
+.secondary-btn:hover {
   filter: brightness(1.03);
 }
 
 .choices-row .choice-btn { flex: 1 1 180px; max-width: 260px; }
 
-.hint-row { margin-top: -8px; }
-
-.hint-btn {
-  border: 3px solid #fff;
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--accent-purple) 0%, var(--accent-purple-strong) 100%);
-  box-shadow: 0 7px 0 var(--accent-purple-shadow);
-  color: #fff;
-  min-height: 64px;
-  min-width: 240px;
-  padding: 10px 18px;
-  font-size: clamp(21px, 2.4vw, 30px);
-  font-weight: 800;
-}
-
-.hint-btn.used,
-.hint-btn:disabled { opacity: 0.62; }
-
-.disabled-choice {
-  opacity: 0.4 !important;
-  filter: grayscale(0.7);
-}
 
 .focused {
   outline: 5px solid var(--focus);
@@ -383,8 +360,7 @@ body.fx-boom {
 
 .choice-btn:active,
 .primary-btn:active,
-.secondary-btn:active,
-.hint-btn:active {
+.secondary-btn:active {
   transform: translateY(3px);
 }
 
@@ -659,8 +635,7 @@ body.fx-boom {
   .score { font-size: clamp(32px, 7vw, 52px); }
 
   .primary-btn,
-  .secondary-btn,
-  .hint-btn { min-width: 0; width: min(100%, 520px); }
+  .secondary-btn { min-width: 0; width: min(100%, 520px); }
 
   .choices-row {
     width: 100%;
@@ -704,8 +679,7 @@ body.fx-boom {
 
   .choice-btn,
   .primary-btn,
-  .secondary-btn,
-  .hint-btn {
+  .secondary-btn {
     min-width: 0;
     width: 100%;
     min-height: 64px;

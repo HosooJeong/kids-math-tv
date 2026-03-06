@@ -10,7 +10,6 @@ function createDefaultProgress() {
         unlocked: idx === 0,
         attempts: 0,
         correct: 0,
-        hintUsed: 0,
         retries: 0,
         completed: false
       };
@@ -45,7 +44,7 @@ export function saveProgress(progress) {
 export function calcMastery(chapterProgress) {
   if (!chapterProgress || chapterProgress.attempts <= 0) return 0;
   const accuracy = chapterProgress.correct / chapterProgress.attempts;
-  const penalty = Math.min(0.25, chapterProgress.hintUsed * 0.02 + chapterProgress.retries * 0.01);
+  const penalty = Math.min(0.25, chapterProgress.retries * 0.01);
   return Math.max(0, Math.min(1, accuracy - penalty));
 }
 
@@ -56,11 +55,10 @@ export function applySessionResult(progress, chapterId, sessionResult) {
 
   cp.attempts += sessionResult.total;
   cp.correct += sessionResult.correct;
-  cp.hintUsed += sessionResult.hintUsed ?? 0;
   cp.retries += sessionResult.retries ?? 0;
 
   const accuracy = sessionResult.total ? sessionResult.correct / sessionResult.total : 0;
-  if (accuracy >= 0.8 && (sessionResult.hintUsed ?? 0) <= Math.floor(sessionResult.total * 0.4)) {
+  if (accuracy >= 0.8) {
     cp.completed = true;
   }
 
