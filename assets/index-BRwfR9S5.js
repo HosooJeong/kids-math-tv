@@ -8,8 +8,8 @@ ${t}개를 먹었어.
 모두 ${r}송이가 되려면
 몇 송이가 더 필요할까?`,answer:r-t,meta:{kind:"missing",total:r,a:t}}}],n=e[E(0,e.length-1)]();return j(n.prompt,n.answer,{type:"story",...n.meta},{min:1,max:12})}function I(e){switch(e){case"subitize":return dt();case"count-match":return lt();case"make-5":return ft();case"add-max-5":return W(5);case"add-max-10":return W(10);case"make-10":return pt();case"missing-addend":return mt();case"subtract-10":return ht();case"story":return gt();case"mixed":{const n=["add-max-10","make-10","missing-addend","subtract-10","story"];return I(n[E(0,n.length-1)])}default:return W(10)}}function yt({total:e=10,chapterId:n="1-1",chapterType:r="add-max-10"}={}){const t={total:e,chapterId:n,chapterType:r,index:0,correct:0,records:[],currentQuestion:null,hintUsed:0,retries:0};function s(){return t.index>=t.total?null:(t.currentQuestion=I(t.chapterType),t.currentQuestion)}function o(c){if(!t.currentQuestion)return null;const i=Number(c)===t.currentQuestion.answer;return i&&(t.correct+=1),i||(t.retries+=1),t.records.push({chapterId:t.chapterId,questionId:t.currentQuestion.id,answer:Number(c),correctAnswer:t.currentQuestion.answer,isCorrect:i,hintUsed:!!t.currentQuestion.hintUsed}),t.index+=1,{isCorrect:i,correctAnswer:t.currentQuestion.answer,done:t.index>=t.total}}function a(){if(!t.currentQuestion||t.currentQuestion.hintUsed)return null;const c=t.currentQuestion.choices.filter(x=>x!==t.currentQuestion.answer);if(!c.length)return null;const i=c[Math.floor(Math.random()*c.length)];return t.currentQuestion.hintUsed=!0,t.hintUsed+=1,{removeChoice:i}}function u(){const c=t.total?t.correct/t.total:0,i=c>=.9?3:c>=.6?2:1;return{chapterId:t.chapterId,total:t.total,correct:t.correct,stars:i,hintUsed:t.hintUsed,retries:t.retries}}return{state:t,nextQuestion:s,submit:o,useHint:a,result:u}}function bt({onLeft:e,onRight:n,onSelect:r}){function t(s){const o=s.key;["ArrowLeft","ArrowRight","Enter"," ","Spacebar"].includes(o)&&s.preventDefault(),o==="ArrowLeft"&&(e==null||e()),o==="ArrowRight"&&(n==null||n()),(o==="Enter"||o===" "||o==="Spacebar")&&(r==null||r())}return window.addEventListener("keydown",t),()=>window.removeEventListener("keydown",t)}function vt(e,{onStartSequential:n,onStartAdaptive:r,onShowProgress:t,onUiSelect:s,onInteract:o}){e.innerHTML=`
     <section class="screen">
-      <h1 class="title">숫자 친구 게임</h1>
-      <p class="subtitle">챕터를 골라서 재밌게 수학하자!</p>
+      <h1 class="title">숫자 친구 놀이공원</h1>
+      <p class="subtitle">알록달록 놀이처럼 숫자를 배워봐요!</p>
       <div class="btn-row home-actions" id="home-actions">
         <button class="primary-btn" data-focus="0">순차 학습</button>
         <button class="secondary-btn" data-focus="1">맞춤 랜덤</button>
@@ -33,7 +33,7 @@ ${t}개를 먹었어.
     </section>
   `;const f=e.querySelector("#choices"),p=e.querySelector("#quiz-screen"),h=e.querySelector("#hint-btn"),g=Array.from(e.querySelectorAll("[data-stage-idx]"));let S=!1;const v=[],$=[];let q=0;function A(){g.forEach((y,b)=>{const m=i[b],Q=m?wt(m):"pending";K(y,Q),y.classList.toggle("is-current",b===x)})}function O(y){const b=g[x];b&&(K(b,y?"correct":"wrong"),b.classList.add("is-current"))}function l(){p.classList.add("show-focus")}function k(y){q=y,$.forEach((b,m)=>b.classList.toggle("focused",m===y))}function N(y){var m;const b=v.find(Q=>Number(Q.textContent)===Number(y));if(!(!b||b.disabled)&&(b.disabled=!0,b.classList.add("disabled-choice"),b.setAttribute("aria-disabled","true"),q<v.length&&((m=$[q])!=null&&m.disabled))){const Q=$.findIndex((G,R)=>R<v.length&&!G.disabled);Q>=0&&k(Q)}}function B(y,b){var m;S||(m=$[b])!=null&&m.disabled||(S=!0,l(),k(b),setTimeout(()=>{s(y),S=!1},90))}return n.choices.forEach((y,b)=>{const m=document.createElement("button");m.className="choice-btn",m.dataset.focus=String(b),m.textContent=String(y),m.addEventListener("pointerdown",()=>{c==null||c(),a==null||a(),l(),k(b)}),m.addEventListener("click",()=>{c==null||c(),u==null||u(),B(y,b)}),f.appendChild(m),v.push(m),$.push(m)}),h.addEventListener("pointerdown",()=>{c==null||c(),a==null||a(),l(),k($.length-1)}),h.addEventListener("click",()=>{if(c==null||c(),u==null||u(),h.disabled)return;const y=o==null?void 0:o();(y==null?void 0:y.removeChoice)!==void 0&&(N(y.removeChoice),h.disabled=!0,h.classList.add("used"),h.textContent="힌트 사용 완료")}),$.push(h),A(),k(0),{focusCount:$.length,setFocus:k,onNavigate:l,markCurrentStage:O,select:y=>{var m;if(y===$.length-1){h.click();return}const b=Number((m=$[y])==null?void 0:m.textContent);Number.isNaN(b)||B(b,y)}}}function $t(e,{chapterTitle:n,chapterObjective:r,unlockMessage:t,result:s,recommendation:o,onReplay:a,onGoHome:u,onUiSelect:c,onInteract:i}){const x="⭐".repeat(s.stars),C="🍎 🍌 🍊 🍇";e.innerHTML=`
     <section class="screen">
-      <h1 class="title">참 잘했어요!</h1>
+      <h1 class="title">와! 정말 잘했어요!</h1>
       <p class="subtitle">${n}</p>
       <p class="subtitle hint-text">학습 목표: ${r}</p>
       <p class="score">${s.correct} / ${s.total}</p>
@@ -78,8 +78,8 @@ ${t}개를 먹었어.
       </section>
     `}).join("");e.innerHTML=`
     <section class="screen">
-      <h1 class="title">진도 지도</h1>
-      <p class="subtitle">월드 순서대로 챕터를 진행해보자</p>
+      <h1 class="title">모험 지도</h1>
+      <p class="subtitle">별을 모으며 차근차근 도전해요!</p>
       <div class="worlds-wrap">${a}</div>
       <div class="btn-row">
         <button class="secondary-btn" data-focus="0">뒤로가기</button>
