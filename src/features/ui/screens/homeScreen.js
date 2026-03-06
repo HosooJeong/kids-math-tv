@@ -1,8 +1,11 @@
-export function renderHomeScreen(root, { onStartSequential, onStartAdaptive, onShowProgress, onUiSelect, onInteract }) {
+export function renderHomeScreen(
+  root,
+  { onStartSequential, onStartAdaptive, onShowProgress, onUiSelect, onInteract }
+) {
   root.innerHTML = `
     <section class="screen">
-      <h1 class="title">숫자 친구 게임</h1>
-      <p class="subtitle">챕터를 골라서 재밌게 수학하자!</p>
+      <h1 class="title">숫자 친구 놀이공원</h1>
+      <p class="subtitle">알록달록 놀이처럼 숫자를 배워봐요!</p>
       <div class="btn-row home-actions" id="home-actions">
         <button class="primary-btn" data-focus="0">순차 학습</button>
         <button class="secondary-btn" data-focus="1">맞춤 랜덤</button>

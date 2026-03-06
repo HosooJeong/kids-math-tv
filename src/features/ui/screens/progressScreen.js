@@ -52,8 +52,8 @@ export function renderProgressScreen(root, { progress, onBack, onStartChapter, o
 
   root.innerHTML = `
     <section class="screen">
-      <h1 class="title">진도 지도</h1>
-      <p class="subtitle">월드 순서대로 챕터를 진행해보자</p>
+      <h1 class="title">모험 지도</h1>
+      <p class="subtitle">별을 모으며 차근차근 도전해요!</p>
       <div class="worlds-wrap">${worlds}</div>
       <div class="btn-row">
         <button class="secondary-btn" data-focus="0">뒤로가기</button>

@@ -98,6 +98,7 @@ export function createApp(root) {
     startWithChapter(chapter, "sequential");
   }
 
+
   function showQuestion() {
     const question = session.nextQuestion();
     if (!question) return showResult();
