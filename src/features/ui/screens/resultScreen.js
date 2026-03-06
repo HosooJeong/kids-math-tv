@@ -4,7 +4,7 @@ export function renderResultScreen(root, { chapterTitle, chapterObjective, unloc
 
   root.innerHTML = `
     <section class="screen">
-      <h1 class="title">참 잘했어요!</h1>
+      <h1 class="title">와! 정말 잘했어요!</h1>
       <p class="subtitle">${chapterTitle}</p>
       <p class="subtitle hint-text">학습 목표: ${chapterObjective}</p>
       <p class="score">${result.correct} / ${result.total}</p>
