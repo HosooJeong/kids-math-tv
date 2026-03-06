@@ -4,7 +4,7 @@ import { renderHomeScreen } from "../features/ui/screens/homeScreen.js";
 import { renderQuizScreen } from "../features/ui/screens/quizScreen.js";
 import { renderResultScreen } from "../features/ui/screens/resultScreen.js";
 import { renderProgressScreen } from "../features/ui/screens/progressScreen.js";
-import { playCorrectEffects } from "../features/ui/components/celebrationEffects.js";
+import { showAnswerMark } from "../features/ui/components/celebrationEffects.js";
 import { createAudioManager } from "../features/audio/createAudioManager.js";
 import { mountMuteToggle } from "../features/ui/components/muteToggle.js";
 import { getChapterById } from "../features/chapters/curriculum.js";
@@ -135,14 +135,15 @@ export function createApp(root) {
       combo += 1;
       screenApi?.markCurrentStage?.(true);
       audio.playCorrectSfx(combo);
-      playCorrectEffects(root, combo);
+      showAnswerMark(root, true);
       const comboText = combo >= 2 ? ` (${combo}콤보!)` : "";
-      feedback = { type: "ok", text: `정답! 잘했어! 🎉${comboText}` };
+      feedback = { type: "ok", text: `정답! 잘했어!${comboText}` };
     } else {
       combo = 0;
       screenApi?.markCurrentStage?.(false);
       audio.playWrongSfx();
-      feedback = { type: "no", text: `아쉬워! 정답은 ${result.correctAnswer}야 🙂` };
+      showAnswerMark(root, false);
+      feedback = { type: "no", text: `아쉬워! 정답은 ${result.correctAnswer}야` };
     }
 
     setTimeout(() => {

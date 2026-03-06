@@ -518,46 +518,44 @@ body.fx-boom {
   z-index: 9999;
 }
 
-.fx-particle {
+.answer-mark {
   position: fixed;
-  left: 0;
-  top: 0;
-  transform: translate(var(--x), var(--y));
-  animation: particle-burst var(--dur) cubic-bezier(0.2, 0.82, 0.3, 1) forwards;
-  animation-delay: var(--delay, 0ms);
-  will-change: transform, opacity;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: answer-mark-pop 560ms ease-out forwards;
 }
 
-.fx-particle.confetti {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.32) inset;
+.answer-circle {
+  width: min(62vmin, 480px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 25%, #b9ffd0 0%, #76e7a0 55%, #4fce85 100%);
+  border: 12px solid #ffffff;
+  box-shadow: 0 18px 40px rgba(79, 206, 133, 0.42);
+  color: #ffffff;
+  font-size: clamp(38px, 8vmin, 74px);
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
-.fx-particle.star {
-  font-size: 26px;
+.answer-cross {
+  font-size: clamp(140px, 36vmin, 340px);
   line-height: 1;
-  filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.4));
+  font-weight: 900;
+  color: #ff6f6f;
+  text-shadow:
+    0 8px 18px rgba(255, 111, 111, 0.4),
+    0 0 0 #fff;
 }
 
-@keyframes particle-burst {
-  0% { transform: translate(var(--x), var(--y)) scale(0.6) rotate(0deg); opacity: 1; }
-  100% { transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy))) scale(1.05) rotate(var(--rot)); opacity: 0; }
-}
-
-@keyframes bg-wave {
-  0% { filter: saturate(1) brightness(1); }
-  35% { filter: saturate(1.15) brightness(1.05) hue-rotate(8deg); }
-  100% { filter: saturate(1) brightness(1); }
-}
-
-@keyframes screen-boom {
-  0% { transform: translate(0, 0) scale(1); }
-  18% { transform: translate(-3px, 2px) scale(1.008); }
-  42% { transform: translate(3px, -2px) scale(1.012); }
-  65% { transform: translate(-2px, 1px) scale(1.006); }
-  100% { transform: translate(0, 0) scale(1); }
+@keyframes answer-mark-pop {
+  0% { opacity: 0; transform: scale(0.7); }
+  20% { opacity: 1; transform: scale(1.04); }
+  72% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.96); }
 }
 
 @keyframes unlock-pop {
