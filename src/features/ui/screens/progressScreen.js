@@ -51,7 +51,8 @@ export function renderProgressScreen(root, { progress, onBack, onStartChapter, o
   }).join("");
 
   root.innerHTML = `
-    <section class="screen">
+    <section class="screen progress-screen">
+      <div class="mascot-badge" aria-hidden="true">🧸</div>
       <h1 class="title">모험 지도</h1>
       <p class="subtitle">별을 모으며 차근차근 도전해요!</p>
       <div class="worlds-wrap">${worlds}</div>

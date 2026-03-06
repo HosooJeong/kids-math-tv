@@ -3,7 +3,8 @@ export function renderHomeScreen(
   { onStartSequential, onStartAdaptive, onShowProgress, onUiSelect, onInteract }
 ) {
   root.innerHTML = `
-    <section class="screen">
+    <section class="screen home-screen">
+      <div class="mascot-badge" aria-hidden="true">🐻‍❄️</div>
       <h1 class="title">숫자 친구 놀이공원</h1>
       <p class="subtitle">알록달록 놀이처럼 숫자를 배워봐요!</p>
       <div class="btn-row home-actions" id="home-actions">

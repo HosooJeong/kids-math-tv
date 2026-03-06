@@ -3,11 +3,13 @@ export function renderResultScreen(root, { chapterTitle, chapterObjective, unloc
   const fruitRow = "🍎 🍌 🍊 🍇";
 
   root.innerHTML = `
-    <section class="screen">
+    <section class="screen result-screen">
+      <div class="mascot-badge" aria-hidden="true">🏆</div>
       <h1 class="title">와! 정말 잘했어요!</h1>
       <p class="subtitle">${chapterTitle}</p>
       <p class="subtitle hint-text">학습 목표: ${chapterObjective}</p>
       <p class="score">${result.correct} / ${result.total}</p>
+      <div class="reward-stars" aria-label="획득 별 ${result.stars}개">${stars}</div>
       <div class="result-basket-wrap">
         <div class="basket-character result-basket-character">
           <div class="basket-handle"></div>
@@ -17,7 +19,6 @@ export function renderResultScreen(root, { chapterTitle, chapterObjective, unloc
           <div class="result-fruits">${fruitRow}</div>
         </div>
       </div>
-      <p class="subtitle">${stars}</p>
       ${unlockMessage ? `<p class="unlock-toast">✨ ${unlockMessage}</p>` : ""}
       <p class="subtitle hint-text">다음 추천: ${recommendation ?? "현재 챕터 복습"}</p>
       <div class="btn-row">

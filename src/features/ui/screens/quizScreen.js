@@ -37,16 +37,24 @@ export function renderQuizScreen(root, {
 }) {
   root.innerHTML = `
     <section class="screen quiz-screen" id="quiz-screen">
-      <p class="progress">${progressText}</p>
-      <div class="stage-map" id="stage-map" role="list" aria-label="라운드 진행 상태">
-        ${buildStageSlots(totalCount)}
-      </div>
+      <header class="screen-header">
+        <p class="progress">${progressText}</p>
+        <div class="stage-map" id="stage-map" role="list" aria-label="라운드 진행 상태">
+          ${buildStageSlots(totalCount)}
+        </div>
+      </header>
 
-      <div class="problem">${question.prompt}</div>
-      <div class="btn-row choices-row" id="choices"></div>
-      <div class="btn-row hint-row">
-        <button class="hint-btn" id="hint-btn" data-focus="${question.choices.length}">힌트 보기</button>
-      </div>
+      <section class="question-card">
+        <div class="problem">${question.prompt}</div>
+      </section>
+
+      <section class="choices-card">
+        <div class="btn-row choices-row" id="choices"></div>
+        <div class="btn-row hint-row">
+          <button class="hint-btn" id="hint-btn" data-focus="${question.choices.length}">힌트 보기</button>
+        </div>
+      </section>
+
       <p class="feedback ${feedback?.type ?? ""}">${feedback?.text ?? ""}</p>
     </section>
   `;
