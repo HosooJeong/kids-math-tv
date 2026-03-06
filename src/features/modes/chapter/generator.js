@@ -2,17 +2,13 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
 function makeChoices(answer, { min = 1, max = 20 } = {}) {
   const pool = new Set([answer]);
   while (pool.size < 3) {
     const offset = randomInt(-3, 3) || 1;
     pool.add(Math.max(min, Math.min(max, answer + offset)));
   }
-  return shuffle([...pool]);
+  return [...pool].sort((a, b) => a - b);
 }
 
 function fruitRow(n) {

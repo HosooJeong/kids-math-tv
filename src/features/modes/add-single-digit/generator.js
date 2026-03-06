@@ -9,7 +9,7 @@ function makeChoices(answer) {
     const n = Math.max(0, Math.min(18, answer + offset + (offset === 0 ? 1 : 0)));
     pool.add(n);
   }
-  return [...pool].sort(() => Math.random() - 0.5);
+  return [...pool].sort((a, b) => a - b);
 }
 
 export function generateAddSingleDigitQuestion(level = 1) {
